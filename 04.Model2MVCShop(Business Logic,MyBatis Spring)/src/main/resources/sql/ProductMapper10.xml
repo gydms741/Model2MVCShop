@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ProductMapper10">
+ 	
+	<resultMap id="productSelectMap" type="product">
+		<result property="prodNo" 			column="prod_no" 			jdbcType="INTEGER" />
+		<result property="prodName"			column="prod_name" 			jdbcType="VARCHAR" />
+		<result property="prodDetail" 		column="prod_detail" 		jdbcType="VARCHAR" />
+		<result property="manuDate" 		column="manufacture_day" 	jdbcType="VARCHAR" />
+		<result property="price" 			column="price" 				jdbcType="INTEGER" />
+		<result property="fileName" 		column="image_file" 		jdbcType="VARCHAR" />
+		<result property="regDate" 			column="reg_date" 			jdbcType="DATE"    />
+		<result property="proTranCode" 		column="proTranCode" 		jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- SQL : INSERT -->
+	<insert 	id="addProduct"		parameterType="product" >
+	 	INSERT
+		INTO product( prod_no, prod_name , prod_detail , manufacture_day , price, image_file, reg_date) 
+		VALUES	 (	seq_product_prod_no.nextval, #{prodName} , #{prodDetail} , #{manuDate:VARCHAR} , #{price:INTEGER} , 
+							#{fileName:VARCHAR}, SYSDATE )
+	</insert>
+	 
+	 <!-- SQL : SELECT ONE -->
+	 <select 	id="getProduct"	parameterType="string"	resultMap="productSelectMap">
+		SELECT
+		prod_no , prod_name , prod_detail , manufacture_Day ,  price, image_file, reg_date
+		FROM product 
+		WHERE prod_name = #{value}
+	 </select> 
+	 
+	 <!-- SQL : UPDATE -->
+	 <update	id="updateProduct"	parameterType="product">
+	   	UPDATE product
+	   	<trim prefix="SET" suffixOverrides=",">
+	   		prod_name = #{prodName},
+	   		prod_detail = #{prodDetail},
+	   		manufacture_day = #{manuDate},
+	   		price = #{price:INTEGER}
+	   	</trim>
+	   	WHERE prod_detail = #{prodDetail}
+	   	
+	  </update>
+	  
+	  <delete id="removeProduct" parameterType="string">
+	  DELETE
+	  FROM product
+	  WHERE prod_name = #{value}
+	  </delete>
+
+	<select id="getProductList" parameterType="com.model2.mvc.common.Search" resultMap="productSelectMap">
+	SELECT *
+	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
+	  					FROM		(	SELECT prod_no , prod_name , price
+											FROM product
+											<if test="searchCondition != null">
+												<where>
+													<if test="searchCondition == 0 and searchKeyword !='' ">
+										 				prod_no = #{searchKeyword}
+													</if>
+													<if test="searchCondition == 1 and searchKeyword !='' ">
+										 				prod_name = #{searchKeyword}
+													</if>
+												</where>
+											</if>
+											ORDER BY prod_no ) inner_table
+						WHERE ROWNUM &lt;= #{endRowNum} )
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} 
+	</select>
+	
+	<select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT prod_no , prod_name , price
+						FROM product
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 			prod_no = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		prod_name = #{searchKeyword}
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>
+	 
+</mapper>
+	
+	<!-- SQL : SELECT LIST -->
+ 	<!--
+	<sql id="select-product">
+		SELECT
+		prod_no , prod_name , prod_detail , manufacture_Day ,  price
+		FROM product 
+	</sql>
+	
+	<sql id="orderby-prodNo-desc">
+		ORDER BY prod_no DESC
+	</sql>
+	
+	<select  id="getProductList"  parameterType="com.model2.mvc.common.Search"	resultMap="productSelectMap">
+		<include refid="select_product"/>
+		<where>
+	 <if test="searchCondition=='prodName'">
+	 	<if test="prodName[0] != null">
+	 	prod_name IN
+	 	<foreach item="value" collection="prodName" open="(" separator="," close=")">
+	 	#{value}
+	 	</foreach>
+	 	</if></if>
+	 	</where>
+	 	</select>-->
+	
+	<!-- <select  id="getProductList"  parameterType="com.model2.mvc.common.Search"	resultMap="productSelectMap">
+		<include refid="select_product"/>
+		<where>
+			<choose>
+				<when test="searchCondition=='prodNo'">
+					<if test="prodNo.size != 0">
+						prod_no IN
+						<foreach item="value" collection="prodNo" open="(" separator="," close=")">
+						#{value}
+						</foreach>
+					</if>
+				</when>
+				<when test="searchCondition=='prodName'">
+					<if test="prodName[0] != null">
+						prod_name IN
+						<foreach item="value" collection="prodName" open="(" separator="," close=")">
+						#{value}
+						</foreach>
+					</if>
+				</when>
+		</choose> 
+		</where>
+	  </select> -->
+	 	<!--  위 두번째 subQuery 의  
+	 			WHERE ROWNUM &lt;= #{endRowNum} ) 는
+	 			WHERE ROWNUM <= #{endRowNum} ) 의미이며..
+	 			< 는 keyword 로 &lt; 를	사용.
+	 			
+	 			<![CDATA[  ~~~  ]]> 를 이용하여 아래와 같이 사용  할 수 있다.
+	 			CDATA ==> Character Data 의 의미 Java 에서 \n 같은 특수문자 처리  
+
+				WHERE ROWNUM <![CDATA[ <=]]> #{endRowNum} )
+		-->
+	
+	<!-- SQL : SELECT ROW Count -->	 
+	 <!--<select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT user_id , user_name , email
+						FROM users
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 			user_id = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		user_name = #{searchKeyword}
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>-->
+	 
