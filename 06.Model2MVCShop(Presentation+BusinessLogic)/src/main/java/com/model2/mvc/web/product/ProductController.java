@@ -96,21 +96,21 @@ public class ProductController {
 	
 	
 	@RequestMapping("/updateProduct.do")
-	public String updateProduct( @ModelAttribute("product") Product product , Model model , HttpSession session) throws Exception{
-
+	public String updateProduct( @ModelAttribute("product") Product product) throws Exception{
+		
 		System.out.println("/updateProduct.do");
 		//Business Logic
 
 		productService.updateProduct(product);
 		
+	//user에서 session이 필요했던 이유 : user Domain에 role이 있어서.	
+//		int sessionId = ((Product)session.getAttribute("product")).getProdNo();
+//		if (sessionId == product.getProdNo()) {
+//			session.setAttribute("product", product);
+//		}
 		
-		int sessionId = ((Product)session.getAttribute("product")).getProdNo();
-		if (sessionId == product.getProdNo()) {
-			session.setAttribute("product", product);
-		}
-		
-		return "forward:/getProduct.do";
-		//return "forward:/getProduct.do?prodNo="+product.getProdNo();
+		//return "forward:/getProduct.do";
+		return "redirect:/getProduct.do?prodNo="+product.getProdNo()+"&menu=manage";
 	}
 	
 	
