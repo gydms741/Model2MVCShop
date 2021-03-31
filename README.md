@@ -57,4 +57,4 @@ MVC model 2 pattern 으로 구현하는 쇼핑몰 미니 프로젝트
 [MVC](https://www.notion.so/MVC-2b5dcb4b629e41b99cf95bb9baece8c3)
 
 모든 처리를 JSP페이지 하나가 담당하는 것과는 달리 JSP페이지와 Servlet, 그리고 Logic을 위한 클래스가 나뉘어 브라우저 요청을 처리한다.
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1eabf8b2-a159-4124-8bea-951ccf42dd35/KakaoTalk_20201123_015632173.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1eabf8b2-a159-4124-8bea-951ccf42dd35/KakaoTalk_20201123_015632173.png)
+![다운로드](http://ontheinfo.com/wp-content/uploads/2016/07/MVC_model2.png)
