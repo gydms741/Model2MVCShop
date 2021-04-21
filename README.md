@@ -54,7 +54,7 @@ MVC model 2 pattern 으로 구현하는 쇼핑몰 미니 프로젝트
 
 ### Model2MVC Pattern 이란?
 
-[MVC](https://www.notion.so/MVC-2b5dcb4b629e41b99cf95bb9baece8c3)
+[MVC ](https://www.notion.so/MVC-2b5dcb4b629e41b99cf95bb9baece8c3)
 
 - MVC 패턴은 코드의 재사용에 유용하며, 사용자 인터페이스와 응용 프로그램 개발에 소요되는 시간을 줄여주는 효과적인 설계 방식을 말한다.
 
